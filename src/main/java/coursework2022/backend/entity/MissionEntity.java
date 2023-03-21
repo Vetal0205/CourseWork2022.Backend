@@ -5,6 +5,10 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+
+import java.util.List;
 
 
 @Entity
@@ -19,9 +23,17 @@ public class MissionEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @ManyToOne
-    @JoinColumn(name = "cars_id")
-    private CarEntity car;
+//    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+//    @JoinColumn(name = "cars_id", nullable = false)
+//    @OnDelete(action = OnDeleteAction.CASCADE)
+    @ManyToMany
+    @JoinTable(
+            schema = "lfou",
+            name = "mission_car",
+            joinColumns = @JoinColumn(name = "mission_id"),
+            inverseJoinColumns = @JoinColumn(name = "car_id")
+    )
+    private List<CarEntity> cars;
 
     @Column(name = "route")
     private String route;

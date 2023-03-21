@@ -1,5 +1,6 @@
 package coursework2022.backend.entity;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -22,15 +23,20 @@ public class CarEntity {
     private String name;
 
     private String power;
-
+    private int amount;
     @Column(name = "weigth")
     private String weight;
 
+    @JsonProperty("fuel_consumption")
     @Column(name = "fuel_consumption")
     private String fuelConsumption;
 
+    @JsonProperty("fuel_range")
+
     @Column(name = "fuel_range")
     private String fuelRange;
+
+    @JsonProperty("fuel_tank")
 
     @Column(name = "fuel_tank")
     private String fuelTank;

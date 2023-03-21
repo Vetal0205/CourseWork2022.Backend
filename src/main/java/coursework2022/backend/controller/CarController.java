@@ -1,11 +1,10 @@
 package coursework2022.backend.controller;
 
 import coursework2022.backend.entity.CarEntity;
-import coursework2022.backend.repository.CarRepository;
+import coursework2022.backend.services.CarService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.ResourceAccessException;
 
 import java.util.List;
 
@@ -14,39 +13,31 @@ import java.util.List;
 @RequestMapping("/back-end/api/car_entity")
 public class CarController {
     @Autowired
-    CarRepository carRepository;
+    CarService carService;
 
     @GetMapping("/retrieve")
     public List<CarEntity> getEntities(){
-        return carRepository.findAll();
+        return carService.getAllCar();
+    }
+
+    @GetMapping("/retrieve/{id}")
+    public CarEntity getEntity(@PathVariable int id){
+        return carService.getCarById(id);
     }
 
     @PostMapping("/create")
     @ResponseStatus(HttpStatus.CREATED)
     public CarEntity postEntity(@RequestBody CarEntity carEntity){
-        return carRepository.save(carEntity);
+        return carService.createMission(carEntity);
     }
 
     @PutMapping("/update/{id}")
-    public CarEntity putEntity(@PathVariable long id, @RequestBody CarEntity newEntity){
-        CarEntity updatedEntity = carRepository.findById(id)
-                .orElseThrow(()-> new ResourceAccessException("Not found missionEntity with id: "+id));
-        updatedEntity.setType(newEntity.getType());
-        updatedEntity.setName(newEntity.getName());
-        updatedEntity.setPower(newEntity.getPower());
-        updatedEntity.setWeight(newEntity.getWeight());
-        updatedEntity.setFuelConsumption(newEntity.getFuelConsumption());
-        updatedEntity.setFuelRange(newEntity.getFuelRange());
-        updatedEntity.setFuelTank(newEntity.getFuelTank());
-        updatedEntity.setCrew(newEntity.getCrew());
-        updatedEntity.setSpeed(newEntity.getSpeed());
-        updatedEntity.setProduction(newEntity.getProduction());
-        updatedEntity.setImage(newEntity.getImage());
-        return carRepository.save(updatedEntity);
+    public CarEntity putEntity(@PathVariable int id, @RequestBody CarEntity newEntity){
+        return carService.updateCar(id, newEntity);
     }
 
     @DeleteMapping("/delete/{id}")
-    public void deleteEntity(@PathVariable long id){
-        carRepository.deleteById(id);
+    public CarEntity deleteEntity(@PathVariable int id){
+        return  carService.deleteCar(id);
     }
 }

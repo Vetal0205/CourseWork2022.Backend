@@ -1,11 +1,10 @@
 package coursework2022.backend.controller;
 
 import coursework2022.backend.entity.MissionEntity;
-import coursework2022.backend.repository.MissionRepository;
+import coursework2022.backend.services.MissionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.ResourceAccessException;
 
 import java.util.List;
 
@@ -14,34 +13,31 @@ import java.util.List;
 @RequestMapping("/back-end/api/mission_entity")
 public class MissionController {
     @Autowired
-    MissionRepository missionRepository;
+    MissionService missionService;
 
     @GetMapping("/retrieve")
     public List<MissionEntity> getEntities(){
-        return missionRepository.findAll();
+        return missionService.getAllMissions();
+    }
+    @GetMapping("/retrieve/{id}")
+    public MissionEntity getEntity(@PathVariable int id){
+        return missionService.getMissionById(id);
     }
 
     @PostMapping("/create")
     @ResponseStatus(HttpStatus.CREATED)
     public MissionEntity postEntity(@RequestBody MissionEntity missionEntity){
-        return missionRepository.save(missionEntity);
+        System.out.println(missionEntity);
+        return missionService.createMission(missionEntity);
     }
 
     @PutMapping("/update/{id}")
-    public MissionEntity putEntity(@PathVariable long id, @RequestBody MissionEntity newEntity){
-        MissionEntity updatedEntity = missionRepository.findById(id)
-                .orElseThrow(()-> new ResourceAccessException("Not found missionEntity with id: "+id));
-        updatedEntity.setCar(newEntity.getCar());
-        updatedEntity.setRoute(newEntity.getRoute());
-        updatedEntity.setFuel(newEntity.getFuel());
-        updatedEntity.setDuration(newEntity.getDuration());
-        updatedEntity.setDistance(newEntity.getDistance());
-        updatedEntity.setPrice(newEntity.getPrice());
-        return missionRepository.save(updatedEntity);
+    public MissionEntity putEntity(@PathVariable int id, @RequestBody MissionEntity newEntity){
+        return missionService.updateMission(id, newEntity);
     }
 
     @DeleteMapping("/delete/{id}")
-    public void deleteEntity(@PathVariable long id){
-        missionRepository.deleteById(id);
+    public MissionEntity deleteEntity(@PathVariable int id){
+        return missionService.deleteMission(id);
     }
 }
